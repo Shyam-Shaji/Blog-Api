@@ -38,6 +38,7 @@ const corsOptions: CorsOptions = {
       logger.warn(`CORS Error ${origin} is not allowded by CORS`);
     }
   },
+  credentials: true,
 };
 
 //applay cors middleware

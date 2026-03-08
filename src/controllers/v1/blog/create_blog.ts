@@ -19,7 +19,7 @@ import Blog from "@/models/blog";
 import { Request, Response } from "express";
 import type { IBlog } from "@/models/blog";
 
-type BlogData = Pick<IBlog, "title" | "content" | "banner" | "status">;
+type BlogData = Pick<IBlog, "title" | "content" | "banner" | "status" >;
 
 /**
  * Purify the blog content
@@ -33,6 +33,7 @@ const createBlog = async (req: Request, res: Response): Promise<void> => {
     const { title, content, banner, status } = req.body as BlogData;
     const userId = req.userId;
     const cleanContent = purify.sanitize(content);
+    //  const banner = req.file?.filename;
     const newBlog = await Blog.create({
       title,
       content: cleanContent,

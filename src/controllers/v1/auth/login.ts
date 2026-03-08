@@ -23,7 +23,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email } = req.body as userData;
     const user = await User.findOne({ email })
-      .select("username email password role")
+      .select("username firstName lastName email password role")
       .lean()
       .exec();
 
@@ -55,6 +55,8 @@ const login = async (req: Request, res: Response): Promise<void> => {
     res.status(201).json({
       user: {
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         role: user.role,
       },
