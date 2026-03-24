@@ -28,7 +28,11 @@ const getCommentsByBlog = async (req: Request, res: Response): Promise<void> => 
         return;
     }
 
-    const allComments = await Comment.find({blogId}).sort({createdAt: -1}).lean().exec();
+    const allComments = await Comment.find({ blogId })
+  .populate("userId", "firstName lastName")
+  .sort({ createdAt: -1 })
+  .lean()
+  .exec();
 
     res.status(200).json({
         comments: allComments,
