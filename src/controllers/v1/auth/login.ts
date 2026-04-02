@@ -21,9 +21,18 @@ type userData = Pick<IUser, "email" | "password">;
 
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
+    if (!req.body) {
+      res.status(400).json({
+        code: "BadRequest",
+        message: "Request body is missing",
+      });
+      return;
+    }
     const { email } = req.body as userData;
     const user = await User.findOne({ email })
-      .select("_id username firstName lastName email password role")
+      .select(
+        "_id username firstName lastName email password role profilePicture coverPicture bio socialLinks"
+      )
       .lean()
       .exec();
 
@@ -60,6 +69,10 @@ const login = async (req: Request, res: Response): Promise<void> => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        profilePicture: user.profilePicture,
+        coverPicture: user.coverPicture,
+        bio: user.bio,
+        socialLinks: user.socialLinks,
       },
       accessToken,
     });

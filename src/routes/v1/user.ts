@@ -10,6 +10,9 @@ import { param, query, body } from "express-validator";
 import authenticate from "@/middlewares/authenticate";
 import validationError from "@/middlewares/validationError";
 import authorize from "@/middlewares/authorize";
+import multer from "multer";
+import uploadUserImages from "@/middlewares/uploadUserImages";
+const upload = multer();
 
 /**
  * Controllers
@@ -38,7 +41,13 @@ router.get(
 router.put(
   "/current",
   authenticate,
+  authenticate,
   authorize(["user", "admin"]),
+  upload.fields([
+    { name: "profile_picture", maxCount: 1 },
+    { name: "cover_picture", maxCount: 1 },
+  ]),
+  uploadUserImages,
   body("username")
     .optional()
     .trim()
@@ -74,6 +83,14 @@ router.put(
     .optional()
     .isLength({ max: 20 })
     .withMessage("Last name must be less than 20 charaters"),
+  body("profile_picture")
+    .optional(),
+  body("cover_picture")
+    .optional(),
+  body("bio")
+    .optional()
+    .isLength({ max: 100 })
+    .withMessage("Bio must be less than 100 charaters"),
   body(["website", "facebook", "instagram", "linkedin", "x", "youtube"])
     .optional()
     .isURL()
@@ -110,7 +127,7 @@ router.get(
 router.get(
   "/:userId",
   authenticate,
-  authorize(["admin"]),
+  authorize(["user","admin"]),
   param("userId").notEmpty().isMongoId().withMessage("Invalid user ID"),
   validationError,
   getUser

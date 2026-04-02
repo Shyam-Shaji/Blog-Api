@@ -11,6 +11,9 @@ export interface IUser {
   role: "admin" | "user";
   firstName?: string;
   lastName?: string;
+  profilePicture?: string;
+  coverPicture?: string;
+  bio?: string;
   socialLinks?: {
     website?: string;
     facebook?: string;
@@ -60,6 +63,16 @@ const userSchema = new Schema<IUser>(
     lastName: {
       type: String,
       maxlength: [20, "Lastname must be less than 20 charaters"],
+    },
+    profilePicture: {
+      type: String,
+    },
+    coverPicture: {
+      type: String,
+    },
+    bio: {
+      type: String,
+      maxlength: [100, "Bio must be less than 100 charaters"],
     },
     socialLinks: {
       website: {

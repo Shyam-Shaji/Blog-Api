@@ -18,12 +18,23 @@ const updateCurrentUser = async (
   res: Response
 ): Promise<void> => {
   const userId = req.userId;
+  if (!req.body) {
+    res.status(400).json({
+      code: "BadRequest",
+      message: "Request body is missing",
+    });
+    return;
+  }
+
   const {
     username,
     email,
     password,
     first_name,
     last_name,
+    profile_picture,
+    cover_picture,
+    bio,
     website,
     facebook,
     instagram,
@@ -33,7 +44,7 @@ const updateCurrentUser = async (
   } = req.body;
 
   try {
-    const user = await User.findById(userId).select("+password -_v").exec();
+    const user = await User.findById(userId).select("-_v").exec();
     if (!user) {
       res.status(404).json({
         code: "NotFound",
@@ -46,6 +57,9 @@ const updateCurrentUser = async (
     if (password) user.password = password;
     if (first_name) user.firstName = first_name;
     if (last_name) user.lastName = last_name;
+    if (profile_picture) user.profilePicture = profile_picture;
+    if (cover_picture) user.coverPicture = cover_picture;
+    if (bio) user.bio = bio;
     if (!user.socialLinks) {
       user.socialLinks = {};
     }

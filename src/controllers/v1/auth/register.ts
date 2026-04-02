@@ -21,6 +21,13 @@ import { IUser } from "@/models/user";
 type UserData = Pick<IUser, "email" | "password" | "role" | "firstName" | "lastName">;
 
 const register = async (req: Request, res: Response): Promise<void> => {
+  if (!req.body) {
+    res.status(400).json({
+      code: "BadRequest",
+      message: "Request body is missing",
+    });
+    return;
+  }
   const { email, password, role, firstName, lastName } = req.body as UserData;
   if (role === "admin" && !config.WHITELIST_ADMIN_MAIL.includes(email)) {
     res.status(403).json({
@@ -66,7 +73,11 @@ const register = async (req: Request, res: Response): Promise<void> => {
         email: newUser.email,
         role: newUser.role,
         firstName: newUser.firstName,
-        lastName : newUser.lastName,
+        lastName: newUser.lastName,
+        profilePicture: newUser.profilePicture,
+        coverPicture: newUser.coverPicture,
+        bio: newUser.bio,
+        socialLinks: newUser.socialLinks,
       },
       accessToken,
     });
