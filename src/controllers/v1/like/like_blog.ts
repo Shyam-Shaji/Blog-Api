@@ -18,7 +18,7 @@ const likeBlog = async (req: Request, res: Response): Promise<void> => {
     const {blogId} = req.params;
     const {userId} = req.body;
   try {
-    const blog = await Blog.findById(blogId).select("likesCount").exec();
+    const blog = await Blog.findById(blogId).select("likesCount likes").exec();
     if(!blog){
         res.status(404).json({
             code: "BlogNotFound",
@@ -36,6 +36,8 @@ const likeBlog = async (req: Request, res: Response): Promise<void> => {
     }
     await Like.create({blogId, userId});
     blog.likesCount++;
+    if (!blog.likes) blog.likes = [];
+    blog.likes.push(userId);
     await blog.save();
 
     logger.info("Blog liked successfully", {

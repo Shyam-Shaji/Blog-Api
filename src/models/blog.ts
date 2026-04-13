@@ -21,6 +21,7 @@ export interface IBlog {
   author: Types.ObjectId;
   viewsCount: number;
   likesCount: number;
+  likes: Types.ObjectId[];
   commentsCount: number;
   status: "draft" | "published";
 }
@@ -75,6 +76,12 @@ const blogSchema = new Schema<IBlog>(
       type: Number,
       default: 0,
     },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     commentsCount: {
       type: Number,
       default: 0,
